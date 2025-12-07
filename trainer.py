@@ -377,15 +377,17 @@ def trainer_dataset(args, model, snapshot_path):
 
         if epoch_num >= max_epoch - 1:
             save_mode_path = os.path.join(snapshot_path, 'epoch_' + str(epoch_num) + '.pth')
-            torch.save(model. state_dict(), save_mode_path)
+            torch.save(model.state_dict(), save_mode_path)
             logging.info("save model to {}".format(save_mode_path))
-            save_ema_path = os.path. join(snapshot_path, 'epoch_' + str(epoch_num) + '_ema.pth')
+            save_ema_path = os.path.join(snapshot_path, 'epoch_' + str(epoch_num) + '_ema.pth')
             torch.save(model_ema.state_dict(), save_ema_path)
             logging.info("save EMA model to {}".format(save_ema_path))
-            logging.info("Training completed! Best model was at epoch {} with loss {:.6f}".format(best_epoch, best_loss))
-            logging.info("Best model saved at: {}".format(os.path.join(snapshot_path, 'best_model.pth')))
-            logging.info("Best EMA model (recommended) saved at: {}".format(os.path.join(snapshot_path, 'best_model_ema.pth')))
             break
-
+    
+    # Log best model information at training completion
+    logging.info("Training completed! Best model was at epoch {} with loss {:.6f}".format(best_epoch, best_loss))
+    logging.info("Best model saved at: {}".format(os.path.join(snapshot_path, 'best_model.pth')))
+    logging.info("Best EMA model (recommended) saved at: {}".format(os.path.join(snapshot_path, 'best_model_ema.pth')))
+    
     writer.close()
     return "Training Finished!"

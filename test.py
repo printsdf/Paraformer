@@ -78,7 +78,7 @@ parser.add_argument('--img_size', type=int, default=224, help='input patch size 
 parser.add_argument('--seed', type=int, default=1234, help='random seed')
 parser.add_argument('--CNN_width', type=int, default=64, help='L2HNet_width_size, default is 64: light mode. Set to 128: normal mode')
 parser.add_argument('--save_path', type=str)
-parser.add_argument('--model_path', type=str, help='Path to model checkpoint. Use "best" to auto-load best_model_ema.pth, "best_regular" for best_model.pth, or specify full path to a .pth file')
+parser.add_argument('--model_path', type=str, help='Path to model checkpoint. Use "best" to load best_model_ema.pth (recommended), "best_regular" to load best_model.pth, or specify full/relative path to a .pth file (e.g., experiments/best_model_ema.pth)')
 parser.add_argument('--gpu', type=str, help='Select GPU number to train' )
 args = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
