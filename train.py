@@ -34,7 +34,7 @@ if __name__ == "__main__":
     dataset_name = args.dataset
     dataset_config = {
         'Chesapeake': {  # default dataset as a example
-            'list_dir': '/home/ashelee/project_TransUNet/list/NY_raw.csv', # The path of the *.csv file
+            'list_dir': '/workspace/Track1-WSSSeg/dataset/CSV_list/Chesapeake_NewYork.csv', # The path of the *.csv file
             'num_classes': 17
         }
     }# Create a config to your own dataset here
