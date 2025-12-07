@@ -294,7 +294,7 @@ def trainer_dataset(args, model, snapshot_path):
     # EMA模型通过对模型参数进行指数移动平均，可以提高模型的泛化能力和稳定性
     # EMA模型通常比普通模型有更好的测试性能，因为它平滑了训练过程中的参数波动
     ema_decay = 0.999
-    model_ema = deepcopy(model). cuda()
+    model_ema = deepcopy(model).cuda()
     for p in model_ema.parameters():
         p.requires_grad_(False)
     
@@ -369,7 +369,7 @@ def trainer_dataset(args, model, snapshot_path):
             # 保存普通模型
             save_mode_path = os.path.join(snapshot_path, 'epoch_' + str(epoch_num) + '.pth')
             torch.save(model.state_dict(), save_mode_path)
-            logging. info("save model to {}".format(save_mode_path))
+            logging.info("save model to {}".format(save_mode_path))
             # 保存 EMA 模型
             save_ema_path = os.path.join(snapshot_path, 'epoch_' + str(epoch_num) + '_ema.pth')
             torch.save(model_ema.state_dict(), save_ema_path)
