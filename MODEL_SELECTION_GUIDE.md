@@ -104,15 +104,23 @@ This will automatically load `best_model.pth` (best regular model)
 
 #### 方法3：手动指定模型路径 / Method 3: Manually Specify Model Path
 
+如果模型在训练目录中（例如 experiments/），可以这样加载：
+
+If models are in training directory (e.g., experiments/), you can load them like:
+
 ```bash
-python test.py --dataset Chesapeake --model_path /path/to/your/best_model_ema.pth --save_path ./results --gpu 0
+python test.py --dataset Chesapeake --model_path experiments/best_model_ema.pth --save_path ./results --gpu 0
 ```
 
 或使用特定epoch的模型 / Or use a specific epoch model:
 
 ```bash
-python test.py --dataset Chesapeake --model_path /path/to/experiments/epoch_99_ema.pth --save_path ./results --gpu 0
+python test.py --dataset Chesapeake --model_path experiments/epoch_99_ema.pth --save_path ./results --gpu 0
 ```
+
+**注意** / **Note**: 使用 `best` 或 `best_regular` 会在当前工作目录查找模型文件。如果模型在其他目录，请使用完整路径。
+
+Using `best` or `best_regular` looks for model files in the current working directory. Use full path if models are in a different directory.
 
 ---
 

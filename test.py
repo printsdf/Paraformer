@@ -186,14 +186,12 @@ if __name__ == "__main__":
     # 或指定完整路径加载特定模型
     snapshot = args.model_path
     if snapshot == "best":
-        # 自动查找best_model_ema.pth
-        model_dir = os.path.dirname(snapshot) if os.path.dirname(snapshot) else "."
-        snapshot = os.path.join(model_dir, "best_model_ema.pth")
+        # 默认在当前目录查找best_model_ema.pth
+        snapshot = "best_model_ema.pth"
         print(f"Auto-loading best EMA model (recommended): {snapshot}")
     elif snapshot == "best_regular":
-        # 自动查找best_model.pth
-        model_dir = os.path.dirname(snapshot) if os.path.dirname(snapshot) else "."
-        snapshot = os.path.join(model_dir, "best_model.pth")
+        # 默认在当前目录查找best_model.pth
+        snapshot = "best_model.pth"
         print(f"Auto-loading best regular model: {snapshot}")
     else:
         print(f"Loading specified model: {snapshot}")
