@@ -290,7 +290,9 @@ def trainer_dataset(args, model, snapshot_path):
     cosine_scheduler = CosineAnnealingLR(optimizer, T_max=max(total_steps - warmup_steps, 1), eta_min=base_lr * 0.05)
     warmup_scheduler = LambdaLR(optimizer, lr_lambda=lambda s: min(1.0, (s + 1) / warmup_steps))
     
-    # EMA 模型
+    # EMA 模型 (Exponential Moving Average)
+    # EMA模型通过对模型参数进行指数移动平均，可以提高模型的泛化能力和稳定性
+    # EMA模型通常比普通模型有更好的测试性能，因为它平滑了训练过程中的参数波动
     ema_decay = 0.999
     model_ema = deepcopy(model). cuda()
     for p in model_ema.parameters():
@@ -302,6 +304,10 @@ def trainer_dataset(args, model, snapshot_path):
     max_iterations = args.max_epochs * len(image_fns) * NUM_CHIPS_PER_TILE
     logging.info("{} iterations per epoch.  {} max iterations ". format(len(image_fns)*NUM_CHIPS_PER_TILE, max_iterations))
     iterator = range(max_epoch)
+    
+    # 跟踪最佳模型 (Track best model based on training loss)
+    best_loss = float('inf')
+    best_epoch = 0
     
     for epoch_num in iterator:
         loss1 = []
@@ -341,8 +347,22 @@ def trainer_dataset(args, model, snapshot_path):
             
         avg_loss1 = np.mean(loss1)
         avg_loss2 = np.mean(loss2)
+        avg_loss = avg_loss1 * 0.5 + avg_loss2 * 0.5
         current_lr = optimizer.param_groups[0]['lr']
-        logging.info('Epoch : %d, CE-branch1 : %f, MCE-branch2: %f, loss: %f, lr: %e' % (epoch_num, avg_loss1, avg_loss2, avg_loss1*0.5+avg_loss2*0.5, current_lr))
+        logging.info('Epoch : %d, CE-branch1 : %f, MCE-branch2: %f, loss: %f, lr: %e' % (epoch_num, avg_loss1, avg_loss2, avg_loss, current_lr))
+        
+        # 保存最佳模型 (Save best model based on lowest training loss)
+        if avg_loss < best_loss:
+            best_loss = avg_loss
+            best_epoch = epoch_num
+            # 保存最佳普通模型
+            best_model_path = os.path.join(snapshot_path, 'best_model.pth')
+            torch.save(model.state_dict(), best_model_path)
+            logging.info("save best model to {} (epoch {}, loss: {:.6f})".format(best_model_path, epoch_num, avg_loss))
+            # 保存最佳EMA模型 (EMA模型通常性能更好，推荐用于推理)
+            best_ema_path = os.path.join(snapshot_path, 'best_model_ema.pth')
+            torch.save(model_ema.state_dict(), best_ema_path)
+            logging.info("save best EMA model to {} (epoch {}, loss: {:.6f})".format(best_ema_path, epoch_num, avg_loss))
         
         save_interval = 20 
         if epoch_num % save_interval == 0:
@@ -362,6 +382,9 @@ def trainer_dataset(args, model, snapshot_path):
             save_ema_path = os.path. join(snapshot_path, 'epoch_' + str(epoch_num) + '_ema.pth')
             torch.save(model_ema.state_dict(), save_ema_path)
             logging.info("save EMA model to {}".format(save_ema_path))
+            logging.info("Training completed! Best model was at epoch {} with loss {:.6f}".format(best_epoch, best_loss))
+            logging.info("Best model saved at: {}".format(os.path.join(snapshot_path, 'best_model.pth')))
+            logging.info("Best EMA model (recommended) saved at: {}".format(os.path.join(snapshot_path, 'best_model_ema.pth')))
             break
 
     writer.close()

@@ -39,9 +39,19 @@ The mapping process contains segmentation and object classification parts that a
 3. Run the "Train" command:
    ```bash
    python train.py --dataset Chesapeake --batch_size 10 --max_epochs 100 --savepath *save path of your folder* --gpu 0
-4. After training, run the "Test" command:
+   ```
+   The training will automatically save the best model checkpoints: `best_model.pth` and `best_model_ema.pth` (recommended for better performance).
+
+4. After training, run the "Test" command with automatic best model selection (recommended):
+   ```bash
+   python test.py --dataset Chesapeake --model_path best --save_path *To save the inferred results* --gpu 0
+   ```
+   Or specify a specific model path:
    ```bash
    python test.py --dataset Chesapeake --model_path *The path of trained .pth file* --save_path *To save the inferred results* --gpu 0
+   ```
+   
+   **📖 For detailed information about model selection (EMA vs regular models), see [MODEL_SELECTION_GUIDE.md](MODEL_SELECTION_GUIDE.md)**
    
 * **To train and test the framework on your dataset:**
 
