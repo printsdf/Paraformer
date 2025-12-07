@@ -36,12 +36,16 @@ class ComboLoss(nn.Module):
             Dice loss value
         """
         pred = F.softmax(pred, dim=1)
-        target_one_hot = F.one_hot(target, num_classes=num_classes).permute(0, 3, 1, 2).float()
         
-        # Create mask for valid pixels (not ignore_index)
+        # Create mask for valid pixels (not ignore_index) before one_hot encoding
         mask = (target != self.ignore_index).float().unsqueeze(1)
         
-        # Apply mask
+        # Clamp target to valid range [0, num_classes-1] for one_hot encoding
+        # Invalid pixels will be masked out anyway
+        target_clamped = target.clamp(0, num_classes - 1)
+        target_one_hot = F.one_hot(target_clamped, num_classes=num_classes).permute(0, 3, 1, 2).float()
+        
+        # Apply mask to both pred and target_one_hot
         pred = pred * mask
         target_one_hot = target_one_hot * mask
         

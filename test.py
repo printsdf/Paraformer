@@ -196,6 +196,15 @@ if __name__ == "__main__":
     else:
         print(f"Loading specified model: {snapshot}")
     
+    # Check if model file exists
+    if not os.path.exists(snapshot):
+        raise FileNotFoundError(
+            f"Model file not found: {snapshot}\n"
+            f"Please ensure the model file exists or provide the correct path.\n"
+            f"Tip: If using 'best' or 'best_regular', make sure you are in the correct directory "
+            f"or provide the full path (e.g., experiments/best_model_ema.pth)"
+        )
+    
     net.load_state_dict(torch.load(snapshot))
     test_save_path=args.save_path 
     os.makedirs(test_save_path, exist_ok=True)
