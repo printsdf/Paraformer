@@ -165,7 +165,7 @@ if __name__ == "__main__":
 
     dataset_config = {
         'Chesapeake': {
-            'list_dir': './dataset/NY_raw.csv', # The path of the *.csv file
+            'list_dir': '/workspace/Track1-WSSSeg/dataset/CSV_list/Chesapeake_NewYork.csv', # The path of the *.csv file
             'num_classes': 17
         }
     }
